@@ -188,7 +188,7 @@
                     <input type="text" id="login-id" placeholder="Enter your ID">
                     <label class="lofi-label" for="login-pass">Password</label>
                     <input type="password" id="login-pass" placeholder="Enter your password">
-                    <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Jane Doe)</div>
+                    <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Pradeep Thakur)</div>
                     <div class="lofi-button full-width" onclick="login('admin')">Login as Admin</div>
                 </div>
             </div>
@@ -360,9 +360,9 @@
         // --- DATA STORE & SESSION ---
         let currentUser = null;
         let grievances = [
-            { id: 'GRV-12345', title: 'Incorrect Grade in Quantum Physics II', category: 'Academic', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'I believe my final grade in PHYS401 was calculated incorrectly. I received a B+ but my scores on all exams and assignments should equate to an A-.', date: '2025-09-12', status: 'Under Review', isAnonymous: false, history: [{ status: 'Under Review', date: '2025-09-13', notes: 'Assigned to the Academic Council.'}, { status: 'Submitted', date: '2025-09-12', notes: 'Grievance submitted.'}] },
+            { id: 'GRV-12345', title: 'Incorrect Grade in Quantum Physics II', category: 'Academic', submittedBy: '10210456', submitterName: 'Pradeep Thakur', email: 'jane.doe@university.edu', description: 'I believe my final grade in PHYS401 was calculated incorrectly. I received a B+ but my scores on all exams and assignments should equate to an A-.', date: '2025-09-12', status: 'Under Review', isAnonymous: false, history: [{ status: 'Under Review', date: '2025-09-13', notes: 'Assigned to the Academic Council.'}, { status: 'Submitted', date: '2025-09-12', notes: 'Grievance submitted.'}] },
             { id: 'GRV-12344', title: 'Faulty Wi-Fi in Library Building', category: 'Facilities', submittedBy: '20310222', submitterName: 'Mark Smith', email: 'mark.smith@university.edu', description: 'The Wi-Fi on the 3rd floor of the main library has been unstable for the past week, making it impossible to study.', date: '2025-09-10', status: 'New', isAnonymous: false, history: [{ status: 'Submitted', date: '2025-09-10', notes: 'Grievance submitted.'}] },
-            { id: 'GRV-12301', title: 'Hostel Room Change Request', category: 'Hostel', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'Requesting a room change due to persistent noise issues with my current roommate.', date: '2025-09-01', status: 'Resolved', isAnonymous: false, history: [{ status: 'Resolved', date: '2025-09-05', notes: 'Room change approved and processed.'}, { status: 'Submitted', date: '2025-09-01', notes: 'Grievance submitted.'}]},
+            { id: 'GRV-12301', title: 'Hostel Room Change Request', category: 'Hostel', submittedBy: '10210456', submitterName: 'Pradeep Thakur', email: 'jane.doe@university.edu', description: 'Requesting a room change due to persistent noise issues with my current roommate.', date: '2025-09-01', status: 'Resolved', isAnonymous: false, history: [{ status: 'Resolved', date: '2025-09-05', notes: 'Room change approved and processed.'}, { status: 'Submitted', date: '2025-09-01', notes: 'Grievance submitted.'}]},
             { id: 'GRV-12343', title: 'Misconduct during lecture', category: 'Academic', submittedBy: 'Anonymous', submitterName: 'Anonymous', email: null, description: 'A professor made inappropriate comments during the lecture on Monday.', date: '2025-09-09', status: 'New', isAnonymous: true, history: [{ status: 'Submitted', date: '2025-09-09', notes: 'Grievance submitted.'}] }
         ];
 
@@ -404,7 +404,7 @@
         // --- CORE APP LOGIC ---
         function login(role) {
             if (role === 'student') {
-                currentUser = { id: '10210456', name: 'Jane Doe', role: 'student', email: 'jane.doe@university.edu' };
+                currentUser = { id: '10210456', name: 'Pradeep Thakur', role: 'student', email: 'pradeep@university.edu' };
                 navigateTo('student-dashboard-screen');
             } else {
                 currentUser = { id: 'admin01', name: 'Admin', role: 'admin' };
@@ -580,4 +580,5 @@
     </script>
 </body>
 </html>
+
 
