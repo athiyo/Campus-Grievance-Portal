@@ -193,6 +193,7 @@
             .prototype-container {
                 border-radius: 0;
                 border: none;
+                min-height: 100vh;
             }
             .screen-content {
                 padding: 1rem;
@@ -219,19 +220,22 @@
 
         <div id="login-screen" class="screen active">
             <!-- Login Screen Content -->
-             <div class="screen-header">Campus Grievance Portal</div>
-             <div class="screen-content">
-                <div class="form-container" style="max-width: 400px; text-align: center;">
-                    <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
-                    <h2>Portal Login</h2>
-                    <label class="lofi-label" for="login-id" style="text-align: left;">Student / Staff ID</label>
-                    <input type="text" id="login-id" placeholder="Enter your ID">
-                    <label class="lofi-label" for="login-pass" style="text-align: left;">Password</label>
-                    <input type="password" id="login-pass" placeholder="Enter your password">
-                    <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Jane Doe)</div>
-                    <div class="lofi-button full-width" onclick="login('admin')">Login as Admin</div>
-                </div>
-            </div>
+              <div class="screen-header">Campus Grievance Portal</div>
+              <div class="screen-content">
+                  <div class="form-container" style="max-width: 400px; margin: 0 auto; text-align: center;">
+                      <img src="https://placehold.co/100x100/007bff/ffffff?text=UoP" 
+                           onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=Error'" 
+                           alt="University Logo" 
+                           style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
+                      <h2>Portal Login</h2>
+                      <label class="lofi-label" for="login-id" style="text-align: left;">Student / Staff ID</label>
+                      <input type="text" id="login-id" placeholder="Enter your ID">
+                      <label class="lofi-label" for="login-pass" style="text-align: left;">Password</label>
+                      <input type="password" id="login-pass" placeholder="Enter your password">
+                      <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Jane Doe)</div>
+                      <div class="lofi-button full-width" onclick="login('admin')">Login as Admin</div>
+                  </div>
+              </div>
         </div>
 
         <div id="student-dashboard-screen" class="screen">
@@ -303,23 +307,23 @@
 
         <div id="tracking-screen" class="screen">
             <!-- Tracking Screen Content -->
-             <div class="screen-header">Track Grievance</div>
-             <div class="screen-content">
-                <div class="dashboard-header">
-                    <h2 id="tracking-id-header"></h2>
-                    <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
-                </div>
-                <div class="lofi-card">
-                    <p><strong>Title:</strong> <span id="tracking-title"></span></p>
-                    <p><strong>Category:</strong> <span id="tracking-category"></span></p>
-                    <p><strong>Status:</strong> <span id="tracking-status" class="lofi-status"></span></p>
-                    <p><strong>Submitted:</strong> <span id="tracking-date"></span> by <span id="tracking-submitter"></span></p>
-                    <strong style="display:block; margin-top:1rem;">Description:</strong>
-                    <p id="tracking-description" style="white-space: pre-wrap; margin-top:0.5rem; color: var(--text-muted-color);"></p>
-                </div>
-                <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Status Timeline</h3>
-                <div class="lofi-timeline" id="tracking-timeline"></div>
-            </div>
+              <div class="screen-header">Track Grievance</div>
+              <div class="screen-content">
+                  <div class="dashboard-header">
+                      <h2 id="tracking-id-header"></h2>
+                      <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
+                  </div>
+                  <div class="lofi-card">
+                      <p><strong>Title:</strong> <span id="tracking-title"></span></p>
+                      <p><strong>Category:</strong> <span id="tracking-category"></span></p>
+                      <p><strong>Status:</strong> <span id="tracking-status" class="lofi-status"></span></p>
+                      <p><strong>Submitted:</strong> <span id="tracking-date"></span> by <span id="tracking-submitter"></span></p>
+                      <strong style="display:block; margin-top:1rem;">Description:</strong>
+                      <p id="tracking-description" style="white-space: pre-wrap; margin-top:0.5rem; color: var(--text-muted-color);"></p>
+                  </div>
+                  <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Status Timeline</h3>
+                  <div class="lofi-timeline" id="tracking-timeline"></div>
+              </div>
         </div>
 
         <div id="admin-dashboard-screen" class="screen">
@@ -399,6 +403,41 @@
     </div>
 
     <script>
+        // --- UTILITY FUNCTIONS ---
+        function showAlert(message, type = 'error') {
+            const alertBox = document.createElement('div');
+            alertBox.style.position = 'fixed';
+            alertBox.style.top = '20px';
+            alertBox.style.right = '20px';
+            alertBox.style.padding = '1rem 1.5rem';
+            alertBox.style.borderRadius = '8px';
+            alertBox.style.color = '#fff';
+            alertBox.style.zIndex = '2000';
+            alertBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            alertBox.style.opacity = '0';
+            alertBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            alertBox.style.transform = 'translateX(20px)';
+
+            alertBox.style.backgroundColor = (type === 'error') ? '#dc3545' : '#28a745';
+            alertBox.textContent = message;
+            document.body.appendChild(alertBox);
+
+            setTimeout(() => {
+                alertBox.style.opacity = '1';
+                alertBox.style.transform = 'translateX(0)';
+            }, 10);
+
+            setTimeout(() => {
+                alertBox.style.opacity = '0';
+                alertBox.style.transform = 'translateX(20px)';
+                setTimeout(() => {
+                    if (alertBox.parentNode) {
+                        alertBox.parentNode.removeChild(alertBox);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
         // --- DATA STORE & SESSION ---
         let currentUser = null;
         let grievances = [
@@ -413,20 +452,36 @@
             console.log("Calling Gemini API with prompt:", prompt);
             await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
             if (prompt.includes("Summarize")) {
-                 return Key points from the grievance:\n- The user is reporting that the Wi-Fi on the 3rd floor of the main library is unstable.\n- This has been an issue for the past week.\n- The problem is preventing the user from studying effectively.;
+                return `Key points from the grievance:
+- The user is reporting that the Wi-Fi on the 3rd floor of the main library is unstable.
+- This has been an issue for the past week.
+- The problem is preventing the user from studying effectively.`;
             } else if (prompt.includes("Write a formal")) {
                 const title = prompt.split("'")[1];
-                return To Whom It May Concern,\n\nI am writing to formally report an issue regarding "${title}". \n\n[Please add specific details here, such as dates, times, locations, and any individuals involved.]\n\nThis situation has caused [explain the impact on you, e.g., disruption to my studies, a safety concern, etc.], and I would appreciate your prompt attention to this matter.\n\nI believe a suitable resolution would be [suggest a desired outcome if you have one].\n\nThank you for your time and consideration. I look forward to hearing about the steps that will be taken to address this grievance.\n\nSincerely,\n${currentUser.name};
+                return `To Whom It May Concern,
+
+I am writing to formally report an issue regarding "${title}". 
+
+[Please add specific details here, such as dates, times, locations, and any individuals involved.]
+
+This situation has caused [explain the impact on you, e.g., disruption to my studies, a safety concern, etc.], and I would appreciate your prompt attention to this matter.
+
+I believe a suitable resolution would be [suggest a desired outcome if you have one].
+
+Thank you for your time and consideration. I look forward to hearing about the steps that will be taken to address this grievance.
+
+Sincerely,
+${currentUser.name}`;
             }
             return "Sorry, I couldn't process that request.";
         }
 
         async function handleAiWrite(button) {
             const title = document.getElementById('title').value;
-            if (!title) { alert("Please enter a title for your grievance first."); return; }
+            if (!title) { showAlert("Please enter a title for your grievance first."); return; }
             const descriptionBox = document.getElementById('description');
             button.innerHTML = "✨ Generating..."; button.disabled = true;
-            const prompt = You are a helpful assistant for a university student. Write a formal and detailed grievance description based on the following title. Be clear, concise, and professional. The title is: '${title}';
+            const prompt = `You are a helpful assistant for a university student. Write a formal and detailed grievance description based on the following title. Be clear, concise, and professional. The title is: '${title}'`;
             descriptionBox.value = await callGeminiApi(prompt);
             button.innerHTML = "✨ Help Me Write This"; button.disabled = false;
         }
@@ -435,10 +490,10 @@
             const grievance = grievances.find(g => g.id === grievanceId);
             if (!grievance) return;
             button.innerHTML = "✨ Summarizing..."; button.disabled = true;
-            const prompt = Summarize the following student grievance into 2-3 key bullet points for an administrator to review quickly. Grievance: '${grievance.description}';
+            const prompt = `Summarize the following student grievance into 2-3 key bullet points for an administrator to review quickly. Grievance: '${grievance.description}'`;
             const result = await callGeminiApi(prompt);
             const summaryContainer = document.getElementById('ai-summary-container');
-            summaryContainer.innerHTML = <strong>✨ AI Summary:</strong><p style="white-space: pre-wrap; margin-top:0.5rem;">${result}</p>;
+            summaryContainer.innerHTML = `<strong>✨ AI Summary:</strong><p style="white-space: pre-wrap; margin-top:0.5rem;">${result}</p>`;
             summaryContainer.style.display = 'block';
             button.innerHTML = "✨ Generate Summary"; button.disabled = false;
         }
@@ -470,7 +525,7 @@
         }
         
         function renderStudentDashboard() {
-            document.getElementById('student-welcome-message').textContent = Welcome, ${currentUser.name}!;
+            document.getElementById('student-welcome-message').textContent = `Welcome, ${currentUser.name}!`;
             const userGrievances = grievances.filter(g => g.submittedBy === currentUser.id);
             const activeContainer = document.getElementById('student-active-grievances');
             const resolvedContainer = document.getElementById('student-resolved-grievances');
@@ -480,10 +535,10 @@
             const resolved = userGrievances.filter(g => g.status === 'Resolved').sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if(active.length) active.forEach(g => activeContainer.appendChild(createGrievanceCard(g)));
-            else activeContainer.innerHTML = <p style="color: var(--text-muted-color);">You have no active grievances.</p>;
+            else activeContainer.innerHTML = `<p style="color: var(--text-muted-color);">You have no active grievances.</p>`;
             
             if(resolved.length) resolved.forEach(g => resolvedContainer.appendChild(createGrievanceCard(g)));
-            else resolvedContainer.innerHTML = <p style="color: var(--text-muted-color);">You have no resolved grievances.</p>;
+            else resolvedContainer.innerHTML = `<p style="color: var(--text-muted-color);">You have no resolved grievances.</p>`;
         }
 
         function getStatusClass(status) {
@@ -498,7 +553,7 @@
             card.className = 'lofi-card clickable';
             card.onclick = () => navigateToTrackingPage(g.id);
             const statusClass = getStatusClass(g.status);
-            card.innerHTML = <div class="lofi-card-header"><span>${g.title}</span><span class="lofi-status ${statusClass}">${g.status}</span></div><div>ID: ${g.id} | Submitted: ${g.date}</div>;
+            card.innerHTML = `<div class="lofi-card-header"><span>${g.title}</span><span class="lofi-status ${statusClass}">${g.status}</span></div><div>ID: ${g.id} | Submitted: ${g.date}</div>`;
             return card;
         }
         
@@ -508,10 +563,10 @@
             const description = document.getElementById('description').value;
             const isAnonymous = document.getElementById('anon').checked;
 
-            if (!title || !category || !description) { alert('Title, Category, and Description are required.'); return; }
+            if (!title || !category || !description) { showAlert('Title, Category, and Description are required.'); return; }
             
-            grievances.unshift({
-                id: GRV-${Math.floor(10000 + Math.random() * 90000)},
+            const newGrievance = {
+                id: `GRV-${Math.floor(10000 + Math.random() * 90000)}`,
                 title, category, description, isAnonymous,
                 submittedBy: isAnonymous ? 'Anonymous' : currentUser.id,
                 submitterName: isAnonymous ? 'Anonymous' : currentUser.name,
@@ -519,10 +574,11 @@
                 date: new Date().toISOString().split('T')[0],
                 status: 'New',
                 history: [{ status: 'Submitted', date: new Date().toISOString().split('T')[0], notes: 'Grievance submitted.' }]
-            });
+            };
+            grievances.unshift(newGrievance);
             
-            document.getElementById('new-grievance-id').textContent = grievances[0].id;
-            document.getElementById('submit-form-screen').querySelectorAll('input, textarea, select').forEach(el => el.value = '');
+            document.getElementById('new-grievance-id').textContent = newGrievance.id;
+            document.getElementById('submit-form-screen').querySelectorAll('input[type="text"], textarea, select').forEach(el => el.value = '');
             document.getElementById('anon').checked = false;
             navigateTo('confirmation-screen');
         }
@@ -531,7 +587,7 @@
             const g = grievances.find(item => item.id === id);
             if (!g) return;
             
-            document.getElementById('tracking-id-header').textContent = Grievance ${g.id};
+            document.getElementById('tracking-id-header').textContent = `Grievance ${g.id}`;
             document.getElementById('tracking-title').textContent = g.title;
             document.getElementById('tracking-category').textContent = g.category;
             document.getElementById('tracking-date').textContent = g.date;
@@ -540,14 +596,14 @@
             
             const statusEl = document.getElementById('tracking-status');
             statusEl.textContent = g.status;
-            statusEl.className = lofi-status ${getStatusClass(g.status)};
+            statusEl.className = `lofi-status ${getStatusClass(g.status)}`;
 
             const timelineEl = document.getElementById('tracking-timeline');
             timelineEl.innerHTML = '';
             g.history.forEach((item, index) => {
                 const itemEl = document.createElement('div');
                 itemEl.className = index === 0 ? 'lofi-timeline-item active' : 'lofi-timeline-item';
-                itemEl.innerHTML = <strong>${item.status}</strong><div style="color:var(--text-muted-color); font-size:0.9rem;">Date: ${item.date}</div><div>${item.notes}</div>;
+                itemEl.innerHTML = `<strong>${item.status}</strong><div style="color:var(--text-muted-color); font-size:0.9rem;">Date: ${item.date}</div><div>${item.notes}</div>`;
                 timelineEl.appendChild(itemEl);
             });
             navigateTo('tracking-screen');
@@ -557,14 +613,14 @@
             const tableBody = document.getElementById('admin-table-body');
             tableBody.innerHTML = '';
             if(!data.length) {
-                tableBody.innerHTML = <tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted-color);">No grievances match the current filter.</td></tr>;
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted-color);">No grievances match the current filter.</td></tr>`;
                 return;
             }
             const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
             sortedData.forEach(g => {
                 const row = tableBody.insertRow();
                 const statusClass = getStatusClass(g.status);
-                const submitterInfo = g.isAnonymous ? 'Anonymous' : ${g.submitterName}<br><small>${g.email}</small>;
+                const submitterInfo = g.isAnonymous ? 'Anonymous' : `${g.submitterName}<br><small>${g.email}</small>`;
                 row.innerHTML = `
                     <td>${g.id}</td><td>${g.title}</td><td>${g.category}</td><td>${submitterInfo}</td>
                     <td>${g.date}</td><td><span class="lofi-status ${statusClass}">${g.status}</span></td>
@@ -585,16 +641,16 @@
             const g = grievances.find(item => item.id === id);
             if (!g) return;
             g.status = newStatus;
-            g.history.unshift({ status: newStatus, date: new Date().toISOString().split('T')[0], notes: notes || Status updated to ${newStatus}. });
+            g.history.unshift({ status: newStatus, date: new Date().toISOString().split('T')[0], notes: notes || `Status updated to ${newStatus}.` });
             closeModal();
             applyFilters();
         }
         
         function viewGrievanceDetails(id) {
             const g = grievances.find(item => item.id === id);
-            document.getElementById('modal-grievance-id').textContent = Details for ${id};
+            document.getElementById('modal-grievance-id').textContent = `Details for ${id}`;
             const body = document.getElementById('modal-body');
-            const submitterInfo = g.isAnonymous ? 'Anonymous' : ${g.submitterName} (<a href="mailto:${g.email}">${g.email}</a>);
+            const submitterInfo = g.isAnonymous ? 'Anonymous' : `${g.submitterName} (<a href="mailto:${g.email}">${g.email}</a>)`;
             body.innerHTML = `
                 <p><strong>Title:</strong> ${g.title}</p>
                 <p><strong>Submitted By:</strong> ${submitterInfo}</p>
