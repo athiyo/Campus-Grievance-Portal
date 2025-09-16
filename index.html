@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Updated Prototype - Campus Grievance Portal</title>
+    <title>Functional Prototype - Campus Grievance Portal</title>
     <style>
         :root {
             --primary-color: #4A5568; /* Slate 600 */
@@ -89,6 +89,7 @@
             border-radius: 6px;
             font-weight: 600;
             transition: all 0.2s;
+            box-sizing: border-box;
         }
         .lofi-button:hover { background-color: var(--background-color); border-color: #CBD5E0; }
         .lofi-button.primary {
@@ -174,8 +175,7 @@
             <div class="screen-header">Campus Grievance Portal</div>
             <div class="screen-content">
                 <div style="max-width: 400px; margin: 0 auto; text-align: center;">
-                         <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
-
+                    <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
                     <h2>Portal Login</h2>
                     <label class="lofi-label" style="text-align: left;">Student / Staff ID</label>
                     <input type="text" placeholder="Enter your ID">
@@ -625,9 +625,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
 
