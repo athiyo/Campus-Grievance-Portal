@@ -176,6 +176,7 @@
             <div class="screen-content">
                 <div style="max-width: 400px; margin: 0 auto; text-align: center;">
                     <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
+
                     <h2>Portal Login</h2>
                     <label class="lofi-label" style="text-align: left;">Student / Staff ID</label>
                     <input type="text" placeholder="Enter your ID">
@@ -218,7 +219,13 @@
                 <select id="category" onchange="checkEmergency(this.value)">
                     <option value="">Select a category...</option>
                     <option value="Academic">Academic</option>
+                    <option value="Administrative">Administrative</option>
                     <option value="Facilities">Facilities</option>
+                    <option value="Hostel">Hostel</option>
+                    <option value="Library">Library</option>
+                    <option value="IT Services">IT Services</option>
+                    <option value="Finance/Fees">Finance/Fees</option>
+                    <option value="Transportation">Transportation</option>
                     <option value="Safety & Security">Safety & Security</option>
                     <option value="Harassment">Harassment</option>
                     <option value="Other">Other</option>
@@ -269,8 +276,8 @@
 
         <!-- Tracking Screen -->
         <div id="tracking-screen" class="screen">
-            <div class="screen-header">Track Grievance</div>
-            <div class="screen-content">
+             <div class="screen-header">Track Grievance</div>
+             <div class="screen-content">
                 <div class="dashboard-header">
                     <h2 id="tracking-id-header"></h2>
                     <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
@@ -455,7 +462,7 @@
         // --- CORE APP LOGIC ---
         function login(role) {
             if (role === 'student') {
-                currentUser = { id: '10210456', name: 'Jane Doe', role: 'student' };
+                currentUser = { id: '10210456', name: 'Jane Doe', role: 'student', email: 'jane.doe@university.edu' };
                 navigateTo('student-dashboard-screen');
             } else {
                 currentUser = { id: 'admin01', name: 'Admin', role: 'admin' };
@@ -625,5 +632,4 @@
     </script>
 </body>
 </html>
-
 
