@@ -6,23 +6,29 @@
     <title>Functional Prototype - Campus Grievance Portal</title>
     <style>
         :root {
-            --primary-color: #007bff;
-            --primary-hover-color: #0056b3;
-            --border-color: #dee2e6;
-            --background-color: #f8f9fa;
-            --text-color: #212529;
-            --text-muted-color: #6c757d;
-            --success-bg: #e8f5e9;
-            --success-color: #388e3c;
-            --review-bg: #fffbe6;
-            --review-color: #b28c00;
-            --ai-feature-bg: #f0f8ff;
-            --ai-feature-border: #cce5ff;
+            --primary-color: #4A5568; /* Slate 600 */
+            --primary-hover-color: #2D3748; /* Slate 800 */
+            --border-color: #E2E8F0; /* Slate 200 */
+            --background-color: #F7FAFC; /* Slate 50 */
+            --text-color: #1A202C; /* Slate 900 */
+            --text-muted-color: #718096; /* Slate 500 */
+            --card-bg: #FFFFFF;
+            
+            --status-resolved-bg: #E2E8F0;
+            --status-resolved-color: #2D3748;
+            --status-progress-bg: #CBD5E0;
+            --status-progress-color: #2D3748;
+            --status-new-bg: #EDF2F7;
+            --status-new-color: #4A5568;
+
+            /* NEW: AI Feature Colors */
+            --ai-feature-bg: #f0f7ff;
+            --ai-feature-border: #d6eaff;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             color: var(--text-color);
-            background-color: #f0f2f5;
+            background-color: #eef2f7;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -34,14 +40,14 @@
         .prototype-container {
             width: 100%;
             max-width: 1200px;
-            background-color: #fff;
+            background-color: var(--card-bg);
             box-shadow: 0 4px 25px rgba(0,0,0,0.1);
             border-radius: 8px;
             overflow: hidden;
         }
         .screen-header {
             padding: 1rem 1.5rem;
-            background-color: #fff;
+            background-color: var(--card-bg);
             border-bottom: 1px solid var(--border-color);
             color: var(--text-color);
             font-weight: 600;
@@ -54,7 +60,6 @@
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* Form & Button Elements */
         input[type="text"], input[type="password"], input[type="email"], textarea, select, input[type="file"] {
             width: 100%;
             padding: 0.75rem;
@@ -63,21 +68,19 @@
             background-color: #fff;
             border-radius: 6px;
             box-sizing: border-box;
-            color: var(--text-color);
-            font-family: inherit;
             font-size: 1rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.25);
         }
         .lofi-button {
             display: inline-block;
             padding: 0.75rem 1.5rem;
             border: 1px solid var(--border-color);
-            background-color: #fff;
+            background-color: var(--card-bg);
             color: var(--text-color);
             cursor: pointer;
             text-align: center;
@@ -86,131 +89,79 @@
             border-radius: 6px;
             font-weight: 600;
             transition: all 0.2s;
-            box-sizing: border-box; /* Added for consistent width calculation */
         }
-        .lofi-button:hover { background-color: var(--background-color); border-color: #c8ced3; }
+        .lofi-button:hover { background-color: var(--background-color); border-color: #CBD5E0; }
         .lofi-button.primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
             color: #fff;
         }
         .lofi-button.primary:hover { background-color: var(--primary-hover-color); border-color: var(--primary-hover-color); }
+        .lofi-button.emergency {
+            background-color: #E53E3E;
+            border-color: #E53E3E;
+            color: #fff;
+        }
+        .lofi-button.emergency:hover { background-color: #C53030; }
         .lofi-button.full-width { 
             width: 100%; 
             display: block;
-            margin-right: 0; /* Reset margin for full width buttons */
+            margin-right: 0;
         }
-        .lofi-link {
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--primary-color);
-            font-weight: 500;
-        }
+        .lofi-link { cursor: pointer; text-decoration: none; color: var(--primary-color); font-weight: 500; }
         .lofi-link:hover { text-decoration: underline; }
         .lofi-label { display: block; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.25rem; }
         
-        /* Layout & Cards */
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .lofi-card {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: box-shadow 0.2s, border-color 0.2s;
-        }
-        .lofi-card.clickable:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border-color: #c8ced3; }
-        .lofi-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-        }
-        .lofi-status {
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: bold;
-            background-color: #f0f0f0;
-            border: 1px solid #ddd;
-        }
-        .lofi-status.resolved { background-color: var(--success-bg); color: var(--success-color); border-color: var(--success-color);}
-        .lofi-status.review { background-color: var(--review-bg); color: var(--review-color); border-color: var(--review-color);}
-        .lofi-status.assigned { background-color: #eef7ff; color: #007bff; border-color: #007bff;}
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .lofi-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; transition: box-shadow 0.2s, border-color 0.2s; }
+        .lofi-card.clickable:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border-color: #CBD5E0; }
+        .lofi-card-header { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem; }
         
-        /* Table */
-        .table-responsive-wrapper {
-            display: block;
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+        .lofi-status { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8em; font-weight: bold; }
+        .lofi-status.resolved { background-color: var(--status-resolved-bg); color: var(--status-resolved-color); border-color: var(--status-resolved-color);}
+        .lofi-status.progress { background-color: var(--status-progress-bg); color: var(--status-progress-color); border-color: var(--status-progress-color);}
+        .lofi-status.new { background-color: var(--status-new-bg); color: var(--status-new-color); border-color: var(--status-new-color);}
+
+        .table-responsive-wrapper { display: block; width: 100%; overflow-x: auto; }
         .lofi-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
         .lofi-table th, .lofi-table td { border-bottom: 1px solid var(--border-color); padding: 1rem; text-align: left; white-space: nowrap; }
         .lofi-table th { background-color: var(--background-color); font-size: 0.9rem; color: var(--text-muted-color); }
         .lofi-table tr:hover { background-color: var(--background-color); }
         .lofi-table td small { color: var(--text-muted-color); }
 
-        /* Modal, Timeline, FAQ */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: #fff; padding: 2rem; border-radius: 8px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem;}
         .modal-close { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: #888; }
         .lofi-timeline { margin-top: 1.5rem; }
         .lofi-timeline-item { padding-left: 1.5rem; border-left: 2px solid var(--border-color); position: relative; padding-bottom: 2rem; }
         .lofi-timeline-item:last-child { padding-bottom: 0; }
-        .lofi-timeline-item::before { content: ''; position: absolute; left: -9px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background-color: #fff; border: 2px solid var(--border-color); }
+        .lofi-timeline-item::before { content: ''; position: absolute; left: -9px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background-color: var(--card-bg); border: 2px solid var(--border-color); }
         .lofi-timeline-item.active::before { border-color: var(--primary-color); background-color: var(--primary-color); }
-        .faq-item { border-bottom: 1px solid var(--border-color); padding: 1rem 0; }
+        .faq-item, .policy-section { border-bottom: 1px solid var(--border-color); padding: 1.5rem 0; }
         .faq-item summary { font-weight: 600; cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
         .faq-item summary::-webkit-details-marker { display: none; }
         .faq-item summary::after { content: '+'; font-size: 1.5rem; }
         .faq-item[open] summary::after { content: '−'; }
-        .faq-item p { margin-top: 1rem; line-height: 1.6; color: var(--text-muted-color); }
+        .faq-item p, .policy-section p, .policy-section li { margin-top: 1rem; line-height: 1.6; color: var(--text-muted-color); }
 
-        /* AI Feature Styles */
+        .privacy-notice { font-size: 0.85rem; color: var(--text-muted-color); margin-top: -0.5rem; margin-bottom: 1rem; }
+        .emergency-notice { display: none; margin-top: 1rem; padding: 1rem; background-color: #FFF5F5; border: 1px solid #E53E3E; border-radius: 6px; }
+
+        /* NEW: AI Feature Styling */
         .ai-summary-container {
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             padding: 1rem;
             background-color: var(--ai-feature-bg);
             border: 1px solid var(--ai-feature-border);
             border-radius: 6px;
         }
 
-        /* Responsive Styles */
         @media (max-width: 768px) {
-            body {
-                padding: 0;
-            }
-            .prototype-container {
-                border-radius: 0;
-                border: none;
-                min-height: 100vh;
-            }
-            .screen-content {
-                padding: 1rem;
-            }
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-            .dashboard-header h2 {
-                font-size: 1.5rem;
-            }
-            .lofi-card-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
+            body { padding: 0; }
+            .prototype-container { border-radius: 0; border: none; min-height: 100vh; }
+            .screen-content { padding: 1rem; }
+            .dashboard-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
         }
     </style>
 </head>
@@ -218,142 +169,161 @@
 
     <div class="prototype-container">
 
+        <!-- Login Screen -->
         <div id="login-screen" class="screen active">
-            <!-- Login Screen Content -->
-              <div class="screen-header">Campus Grievance Portal</div>
-              <div class="screen-content">
-                  <div class="form-container" style="max-width: 400px; margin: 0 auto; text-align: center;">
-<!--                       <img src="https://placehold.co/100x100/007bff/ffffff?text=UoP" 
-                           onerror="this.onerror=null;this.src='https://placehold.co/100x100/cccccc/ffffff?text=Error'" 
-                           alt="University Logo" 
-                           style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;"> -->
-
-                           <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
-
-                      <h2>Portal Login</h2>
-                      <label class="lofi-label" for="login-id" style="text-align: left;">Student / Staff ID</label>
-                      <input type="text" id="login-id" placeholder="Enter your ID">
-                      <label class="lofi-label" for="login-pass" style="text-align: left;">Password</label>
-                      <input type="password" id="login-pass" placeholder="Enter your password">
-                      <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Jane Doe)</div>
-                      <div class="lofi-button full-width" onclick="login('admin')">Login as Admin</div>
-                  </div>
-              </div>
+            <div class="screen-header">Campus Grievance Portal</div>
+            <div class="screen-content">
+                <div style="max-width: 400px; margin: 0 auto; text-align: center;">
+                    <img src="https://placehold.co/100x100/4A5568/FFFFFF?text=U" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%;">
+                    <h2>Portal Login</h2>
+                    <label class="lofi-label" style="text-align: left;">Student / Staff ID</label>
+                    <input type="text" placeholder="Enter your ID">
+                    <label class="lofi-label" style="text-align: left;">Password</label>
+                    <input type="password" placeholder="Enter your password">
+                    <div class="lofi-button primary full-width" onclick="login('student')">Login as Student (Jane Doe)</div>
+                    <div class="lofi-button full-width" onclick="login('admin')">Login as Admin</div>
+                </div>
+            </div>
         </div>
 
+        <!-- Student Dashboard -->
         <div id="student-dashboard-screen" class="screen">
-            <!-- Student Dashboard Content -->
             <div class="screen-header">Student Dashboard</div>
             <div class="screen-content">
                 <div class="dashboard-header">
                     <h2 id="student-welcome-message"></h2>
                     <div>
-                         <span class="lofi-link" onclick="navigateTo('faq-screen')">Help/FAQ</span>
+                         <span class="lofi-link" onclick="navigateTo('policy-screen')">Our Process & Policies</span>
+                         <span class="lofi-link" style="margin-left: 1.5rem;" onclick="navigateTo('faq-screen')">Help/FAQ</span>
                          <span class="lofi-link" style="margin-left: 1.5rem;" onclick="logout()">Logout</span>
                     </div>
                 </div>
-                <div class="lofi-button primary" onclick="navigateTo('submit-form-screen')">+ Submit New Grievance</div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <div class="lofi-button primary" onclick="navigateTo('submit-form-screen')">+ Submit New Grievance</div>
+                    <div class="lofi-button emergency" onclick="showEmergencyModal()">Emergency Contact</div>
+                </div>
                 <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Active Grievances</h3>
-                <div id="student-active-grievances"><p style="color: var(--text-muted-color);">You have no active grievances.</p></div>
+                <div id="student-active-grievances"></div>
                 <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Resolved Grievances</h3>
-                <div id="student-resolved-grievances"><p style="color: var(--text-muted-color);">You have no resolved grievances.</p></div>
+                <div id="student-resolved-grievances"></div>
             </div>
         </div>
         
+        <!-- Submit Form Screen -->
         <div id="submit-form-screen" class="screen">
-            <!-- Submit Form Screen Content -->
             <div class="screen-header">Submit a New Grievance</div>
             <div class="screen-content">
                 <label class="lofi-label" for="category">Grievance Category</label>
-                <select id="category">
+                <select id="category" onchange="checkEmergency(this.value)">
                     <option value="">Select a category...</option>
                     <option value="Academic">Academic</option>
-                    <option value="Administrative">Administrative</option>
                     <option value="Facilities">Facilities</option>
-                    <option value="Hostel">Hostel</option>
-                    <option value="Library">Library</option>
-                    <option value="IT Services">IT Services</option>
-                    <option value="Finance/Fees">Finance/Fees</option>
-                    <option value="Transportation">Transportation</option>
                     <option value="Safety & Security">Safety & Security</option>
                     <option value="Harassment">Harassment</option>
                     <option value="Other">Other</option>
                 </select>
+                
+                <div id="emergency-notice" class="emergency-notice">
+                    <strong>This is a sensitive category.</strong> If you are in immediate danger, please use the emergency contact options now.
+                    <div class="lofi-button emergency" onclick="showEmergencyModal()" style="margin-top: 0.5rem;">Show Emergency Contacts</div>
+                </div>
+                
                 <label class="lofi-label" for="title">Title</label>
                 <input type="text" id="title" placeholder="e.g., Incorrect grade awarded for final exam">
                 
+                <!-- NEW: AI Feature Button -->
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <label class="lofi-label" for="description">Detailed Description</label>
                     <div class="lofi-button" id="ai-write-btn" onclick="handleAiWrite(this)">✨ Help Me Write This</div>
                 </div>
                 <textarea id="description" rows="5" placeholder="Describe your issue in detail, or provide a title and click 'Help Me Write This'."></textarea>
                 
+                <label class="lofi-label" for="solution">Suggested Solution / Preferred Outcome (Optional)</label>
+                <textarea id="solution" rows="3" placeholder="e.g., I would like the grade to be reviewed and recalculated."></textarea>
+                
                 <label class="lofi-label">Upload Supporting Files (Optional)</label>
-                <input type="file" style="margin-top: 0.5rem;">
-                <div style="margin: 1.5rem 0; display:flex; align-items:center;"><input type="checkbox" id="anon" style="width: auto; height: 1rem; margin-right: 0.5rem;"><label for="anon" style="font-weight:normal; margin:0;">Submit Anonymously</label></div>
+                <input type="file">
+                
+                <div class="privacy-notice">
+                    Your information is protected under the university's privacy policy. Anonymous submissions will hide your personal details from initial reviewers. <span class="lofi-link" onclick="navigateTo('policy-screen')">Read Policy</span>
+                </div>
+                <div style="display:flex; align-items:center;"><input type="checkbox" id="anon" style="width: auto; margin-right: 0.5rem;"><label for="anon" style="font-weight:normal; margin:0;">Submit Anonymously</label></div>
+                
                 <div class="lofi-button primary" onclick="submitNewGrievance()">Submit Grievance</div>
                 <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
             </div>
         </div>
 
+        <!-- Confirmation Screen -->
         <div id="confirmation-screen" class="screen">
-            <!-- Confirmation Screen Content -->
             <div class="screen-header">Submission Successful</div>
             <div class="screen-content" style="text-align: center; padding: 4rem 2rem;">
-                <h1 style="font-size: 4rem; color: var(--success-color); border:none;">✓</h1>
+                <h1 style="font-size: 4rem; color: var(--primary-color); border:none;">✓</h1>
                 <h2>Grievance Submitted!</h2>
-                <p>Your reference number is: <strong id="new-grievance-id"></strong></p>
+                <p>Your grievance ID is: <strong id="new-grievance-id"></strong></p>
                 <p style="margin-top: 2rem; color: var(--text-muted-color);">You can track the status of this grievance from your dashboard.</p>
                 <div class="lofi-button primary" onclick="navigateTo('student-dashboard-screen')">Back to Dashboard</div>
             </div>
         </div>
 
+        <!-- Tracking Screen -->
         <div id="tracking-screen" class="screen">
-            <!-- Tracking Screen Content -->
-              <div class="screen-header">Track Grievance</div>
-              <div class="screen-content">
-                  <div class="dashboard-header">
-                      <h2 id="tracking-id-header"></h2>
-                      <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
-                  </div>
-                  <div class="lofi-card">
-                      <p><strong>Title:</strong> <span id="tracking-title"></span></p>
-                      <p><strong>Category:</strong> <span id="tracking-category"></span></p>
-                      <p><strong>Status:</strong> <span id="tracking-status" class="lofi-status"></span></p>
-                      <p><strong>Submitted:</strong> <span id="tracking-date"></span> by <span id="tracking-submitter"></span></p>
-                      <strong style="display:block; margin-top:1rem;">Description:</strong>
-                      <p id="tracking-description" style="white-space: pre-wrap; margin-top:0.5rem; color: var(--text-muted-color);"></p>
-                  </div>
-                  <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Status Timeline</h3>
-                  <div class="lofi-timeline" id="tracking-timeline"></div>
-              </div>
+            <div class="screen-header">Track Grievance</div>
+            <div class="screen-content">
+                <div class="dashboard-header">
+                    <h2 id="tracking-id-header"></h2>
+                    <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
+                </div>
+                <div class="lofi-card">
+                    <p><strong>Title:</strong> <span id="tracking-title"></span></p>
+                    <p><strong>Category:</strong> <span id="tracking-category"></span></p>
+                    <p><strong>Status:</strong> <span id="tracking-status" class="lofi-status"></span></p>
+                    <p><strong>Submitted:</strong> <span id="tracking-date"></span> by <span id="tracking-submitter"></span></p>
+                    <div id="tracking-solution-container" style="display:none;">
+                        <strong style="display:block; margin-top:1rem;">Suggested Solution:</strong>
+                        <p id="tracking-solution" style="white-space: pre-wrap; margin-top:0.5rem; color: var(--text-muted-color);"></p>
+                    </div>
+                    <strong style="display:block; margin-top:1rem;">Description:</strong>
+                    <p id="tracking-description" style="white-space: pre-wrap; margin-top:0.5rem; color: var(--text-muted-color);"></p>
+                </div>
+                <h3 style="margin-top: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Status Timeline</h3>
+                <div class="lofi-timeline" id="tracking-timeline"></div>
+            </div>
+        </div>
+        
+        <!-- Policy Screen -->
+        <div id="policy-screen" class="screen">
+            <div class="screen-header">Our Process & Policies</div>
+            <div class="screen-content">
+                <div class="dashboard-header">
+                    <h2>Grievance Policy</h2>
+                    <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
+                </div>
+                <div class="policy-section">
+                    <h3>Our Commitment to Privacy</h3>
+                    <p>The university is committed to ensuring the privacy and confidentiality of all individuals who use this portal. All information submitted is securely stored and is only accessible to authorized personnel directly involved in the resolution process.</p>
+                </div>
+                <div class="policy-section">
+                    <h3>The Grievance Resolution Process</h3>
+                    <ol style="padding-left: 1.5rem;">
+                        <li><strong>Submission & Acknowledgement:</strong> You submit a grievance and receive a unique tracking ID.</li>
+                        <li><strong>Initial Review:</strong> The grievance is reviewed by the central committee within 2 business days.</li>
+                        <li><strong>Assignment:</strong> The case is formally assigned to the relevant department.</li>
+                        <li><strong>Investigation:</strong> The department investigates the issue.</li>
+                        <li><strong>Action & Resolution:</strong> The department takes action to resolve the grievance.</li>
+                        <li><strong>Closure:</strong> The case is marked as resolved.</li>
+                    </ol>
+                </div>
+            </div>
         </div>
 
+        <!-- Admin Dashboard -->
         <div id="admin-dashboard-screen" class="screen">
-            <!-- Admin Dashboard Content -->
             <div class="screen-header">Admin Dashboard</div>
             <div class="screen-content">
                  <div class="dashboard-header">
                     <h2>All Grievances</h2>
                     <span class="lofi-link" onclick="logout()">Logout</span>
-                </div>
-                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                    <strong>Filter by:</strong>
-                    <select id="filter-status" onchange="applyFilters()" style="margin:0;"><option value="All">Status: All</option><option value="New">Status: New</option><option value="Resolved">Status: Resolved</option></select>
-                    <select id="filter-category" onchange="applyFilters()" style="margin:0;">
-                        <option value="All">Category: All</option>
-                        <option value="Academic">Academic</option>
-                        <option value="Administrative">Administrative</option>
-                        <option value="Facilities">Facilities</option>
-                        <option value="Hostel">Hostel</option>
-                        <option value="Library">Library</option>
-                        <option value="IT Services">IT Services</option>
-                        <option value="Finance/Fees">Finance/Fees</option>
-                        <option value="Transportation">Transportation</option>
-                        <option value="Safety & Security">Safety & Security</option>
-                        <option value="Harassment">Harassment</option>
-                        <option value="Other">Other</option>
-                    </select>
                 </div>
                 <div class="table-responsive-wrapper">
                     <table class="lofi-table">
@@ -364,31 +334,13 @@
             </div>
         </div>
         
+        <!-- FAQ Screen -->
         <div id="faq-screen" class="screen">
-            <!-- FAQ Screen Content -->
-            <div class="screen-header">Help & Frequently Asked Questions</div>
+            <div class="screen-header">Help & FAQs</div>
             <div class="screen-content">
                 <div class="dashboard-header">
-                    <h2>FAQs</h2>
+                    <h2>Frequently Asked Questions</h2>
                     <div class="lofi-button" onclick="goBackToDashboard()">Go Back</div>
-                </div>
-                <div class="faq-list">
-                    <details class="faq-item">
-                        <summary>How do I submit a grievance?</summary>
-                        <p>From your student dashboard, click the "+ Submit New Grievance" button. Fill in all the required fields, including category, title, and a detailed description. You can also upload supporting documents if needed.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>Is my submission anonymous?</summary>
-                        <p>You have the option to submit your grievance anonymously by checking the "Submit Anonymously" box on the form. If you choose this option, your personal details will be hidden from the initial reviewers.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>What happens after I submit my grievance?</summary>
-                        <p>Once submitted, your grievance is assigned a unique ID and routed to the relevant department (e.g., Academics, Facilities). You can track its status and see all updates on the "Track Grievance" page accessible from your dashboard.</p>
-                    </details>
-                    <details class="faq-item">
-                        <summary>How long will it take to resolve my issue?</summary>
-                        <p>Resolution times vary. Simple facilities requests may be resolved within 48 hours, while complex academic issues may take up to 14 working days. You will see status updates in the tracking timeline.</p>
-                    </details>
                 </div>
             </div>
         </div>
@@ -399,9 +351,25 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 id="modal-grievance-id"></h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <button class="modal-close" onclick="closeModal('admin-details-modal')">&times;</button>
             </div>
             <div id="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- Emergency Contact Modal -->
+    <div id="emergency-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Emergency Contacts</h2>
+                <button class="modal-close" onclick="closeModal('emergency-modal')">&times;</button>
+            </div>
+            <p>If you are in immediate danger or need urgent assistance, please contact the appropriate service directly.</p>
+            <div style="margin-top: 1.5rem;">
+                <p><strong>Campus Security (24/7):</strong> <a href="tel:123-456-7890">123-456-7890</a></p>
+                <p><strong>Student Counseling Services:</strong> <a href="tel:123-456-7891">123-456-7891</a></p>
+                <p><strong>Medical Emergency:</strong> <a href="tel:911">911</a></p>
+            </div>
         </div>
     </div>
 
@@ -409,19 +377,13 @@
         // --- UTILITY FUNCTIONS ---
         function showAlert(message, type = 'error') {
             const alertBox = document.createElement('div');
-            alertBox.style.position = 'fixed';
-            alertBox.style.top = '20px';
-            alertBox.style.right = '20px';
-            alertBox.style.padding = '1rem 1.5rem';
-            alertBox.style.borderRadius = '8px';
-            alertBox.style.color = '#fff';
-            alertBox.style.zIndex = '2000';
-            alertBox.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-            alertBox.style.opacity = '0';
-            alertBox.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-            alertBox.style.transform = 'translateX(20px)';
-
-            alertBox.style.backgroundColor = (type === 'error') ? '#dc3545' : '#28a745';
+            Object.assign(alertBox.style, {
+                position: 'fixed', top: '20px', right: '20px', padding: '1rem 1.5rem',
+                borderRadius: '8px', color: '#fff', zIndex: '2000',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.15)', opacity: '0',
+                transition: 'opacity 0.3s ease, transform 0.3s ease', transform: 'translateX(20px)',
+                backgroundColor: (type === 'error') ? '#E53E3E' : '#4A5568'
+            });
             alertBox.textContent = message;
             document.body.appendChild(alertBox);
 
@@ -433,48 +395,36 @@
             setTimeout(() => {
                 alertBox.style.opacity = '0';
                 alertBox.style.transform = 'translateX(20px)';
-                setTimeout(() => {
-                    if (alertBox.parentNode) {
-                        alertBox.parentNode.removeChild(alertBox);
-                    }
-                }, 300);
+                setTimeout(() => alertBox.remove(), 300);
             }, 3000);
         }
 
         // --- DATA STORE & SESSION ---
         let currentUser = null;
         let grievances = [
-            { id: 'GRV-12345', title: 'Incorrect Grade in Quantum Physics II', category: 'Academic', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'I believe my final grade in PHYS401 was calculated incorrectly. I received a B+ but my scores on all exams and assignments should equate to an A-.', date: '2025-09-12', status: 'Under Review', isAnonymous: false, history: [{ status: 'Under Review', date: '2025-09-13', notes: 'Assigned to the Academic Council.'}, { status: 'Submitted', date: '2025-09-12', notes: 'Grievance submitted.'}] },
-            { id: 'GRV-12344', title: 'Faulty Wi-Fi in Library Building', category: 'Facilities', submittedBy: '20310222', submitterName: 'Mark Smith', email: 'mark.smith@university.edu', description: 'The Wi-Fi on the 3rd floor of the main library has been unstable for the past week, making it impossible to study.', date: '2025-09-10', status: 'New', isAnonymous: false, history: [{ status: 'Submitted', date: '2025-09-10', notes: 'Grievance submitted.'}] },
-            { id: 'GRV-12301', title: 'Hostel Room Change Request', category: 'Hostel', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'Requesting a room change due to persistent noise issues with my current roommate.', date: '2025-09-01', status: 'Resolved', isAnonymous: false, history: [{ status: 'Resolved', date: '2025-09-05', notes: 'Room change approved and processed.'}, { status: 'Submitted', date: '2025-09-01', notes: 'Grievance submitted.'}]},
-            { id: 'GRV-12343', title: 'Misconduct during lecture', category: 'Academic', submittedBy: 'Anonymous', submitterName: 'Anonymous', email: null, description: 'A professor made inappropriate comments during the lecture on Monday.', date: '2025-09-09', status: 'New', isAnonymous: true, history: [{ status: 'Submitted', date: '2025-09-09', notes: 'Grievance submitted.'}] }
+            { id: '12345', title: 'Incorrect Grade in Quantum Physics II', category: 'Academic', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'I believe my final grade in PHYS401 was calculated incorrectly. I received a B+ but my scores on all exams and assignments should equate to an A-.', suggestedSolution: 'A review and recalculation of my final grade.', date: '2025-09-12', status: 'Investigation in Progress', isAnonymous: false, history: [{ status: 'Investigation in Progress', date: '2025-09-14', notes: 'Academic Council is reviewing the grading scheme.'}, { status: 'Assigned to Academics', date: '2025-09-13', notes: 'Assigned to the Academic Council.'}, { status: 'Acknowledged', date: '2025-09-12', notes: 'Grievance received.'}]},
+            { id: '12344', title: 'Faulty Wi-Fi in Library Building', category: 'Facilities', submittedBy: '20310222', submitterName: 'Mark Smith', email: 'mark.smith@university.edu', description: 'The Wi-Fi on the 3rd floor of the main library has been unstable for the past week, making it impossible to study.', suggestedSolution: 'Please send a technician to fix the access point.', date: '2025-09-10', status: 'New', isAnonymous: false, history: [{ status: 'Submitted', date: '2025-09-10', notes: 'Grievance submitted.'}] },
+            { id: '12301', title: 'Hostel Room Change Request', category: 'Hostel', submittedBy: '10210456', submitterName: 'Jane Doe', email: 'jane.doe@university.edu', description: 'Requesting a room change due to persistent noise issues with my current roommate.', suggestedSolution: 'To be moved to a different room.', date: '2025-09-01', status: 'Resolved', isAnonymous: false, history: [{ status: 'Resolved', date: '2025-09-05', notes: 'Room change approved.'}, { status: 'Information Requested', date: '2025-09-03', notes: 'Contacted student for preferred building options.'}, { status: 'Submitted', date: '2025-09-01', notes: 'Grievance submitted.'}]},
         ];
 
-        // --- GEMINI API SIMULATION ---
+        // --- GEMINI API INTEGRATION ---
         async function callGeminiApi(prompt) {
-            console.log("Calling Gemini API with prompt:", prompt);
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+            console.log("Calling Mock Gemini API with prompt:", prompt);
+            
+            // In a real application, this would be a fetch call to the Gemini API endpoint.
+            // We simulate the delay and response for this prototype.
+            await new Promise(resolve => setTimeout(resolve, 1500)); 
+
             if (prompt.includes("Summarize")) {
-                return `Key points from the grievance:
-- The user is reporting that the Wi-Fi on the 3rd floor of the main library is unstable.
-- This has been an issue for the past week.
-- The problem is preventing the user from studying effectively.`;
+                const grievanceText = prompt.split("'")[1];
+                if (grievanceText.toLowerCase().includes("grade")) {
+                    return `Key points from the grievance:\n- Student believes their final grade in PHYS401 is incorrect.\n- They expected an A- but received a B+.\n- They are requesting a formal review and recalculation of the grade.`;
+                }
+                return `Key points from the grievance:\n- The user is reporting an issue.\n- It has been causing a disruption.\n- They are requesting a resolution.`;
+
             } else if (prompt.includes("Write a formal")) {
                 const title = prompt.split("'")[1];
-                return `To Whom It May Concern,
-
-I am writing to formally report an issue regarding "${title}". 
-
-[Please add specific details here, such as dates, times, locations, and any individuals involved.]
-
-This situation has caused [explain the impact on you, e.g., disruption to my studies, a safety concern, etc.], and I would appreciate your prompt attention to this matter.
-
-I believe a suitable resolution would be [suggest a desired outcome if you have one].
-
-Thank you for your time and consideration. I look forward to hearing about the steps that will be taken to address this grievance.
-
-Sincerely,
-${currentUser.name}`;
+                return `To Whom It May Concern,\n\nI am writing to formally report an issue regarding "${title}". \n\n[Please add specific details here, such as dates, times, locations, and any individuals involved.]\n\nThis situation has caused [explain the impact on you, e.g., disruption to my studies, a safety concern, etc.], and I would appreciate your prompt attention to this matter.\n\nI believe a suitable resolution would be [suggest a desired outcome if you have one].\n\nThank you for your time and consideration. I look forward to hearing about the steps that will be taken to address this grievance.\n\nSincerely,\n${currentUser.name}`;
             }
             return "Sorry, I couldn't process that request.";
         }
@@ -498,13 +448,13 @@ ${currentUser.name}`;
             const summaryContainer = document.getElementById('ai-summary-container');
             summaryContainer.innerHTML = `<strong>✨ AI Summary:</strong><p style="white-space: pre-wrap; margin-top:0.5rem;">${result}</p>`;
             summaryContainer.style.display = 'block';
-            button.innerHTML = "✨ Generate Summary"; button.disabled = false;
+            button.style.display = 'none'; // Hide button after use
         }
 
         // --- CORE APP LOGIC ---
         function login(role) {
             if (role === 'student') {
-                currentUser = { id: '10210456', name: 'Jane Doe', role: 'student', email: 'jane.doe@university.edu' };
+                currentUser = { id: '10210456', name: 'Jane Doe', role: 'student' };
                 navigateTo('student-dashboard-screen');
             } else {
                 currentUser = { id: 'admin01', name: 'Admin', role: 'admin' };
@@ -519,7 +469,7 @@ ${currentUser.name}`;
             window.scrollTo(0, 0);
             if (currentUser) {
                 if (screenId === 'student-dashboard-screen') renderStudentDashboard();
-                if (screenId === 'admin-dashboard-screen') applyFilters();
+                if (screenId === 'admin-dashboard-screen') renderAdminTable(grievances);
             }
         }
 
@@ -546,9 +496,8 @@ ${currentUser.name}`;
 
         function getStatusClass(status) {
             if (status === 'Resolved') return 'resolved';
-            if (status.includes('Review')) return 'review';
-            if (status.includes('Assigned')) return 'assigned';
-            return '';
+            if (status.includes('New') || status.includes('Submitted') || status.includes('Acknowledged')) return 'new';
+            return 'progress';
         }
 
         function createGrievanceCard(g) {
@@ -561,28 +510,23 @@ ${currentUser.name}`;
         }
         
         function submitNewGrievance() {
-            const title = document.getElementById('title').value;
-            const category = document.getElementById('category').value;
-            const description = document.getElementById('description').value;
-            const isAnonymous = document.getElementById('anon').checked;
-
-            if (!title || !category || !description) { showAlert('Title, Category, and Description are required.'); return; }
-            
             const newGrievance = {
-                id: `GRV-${Math.floor(10000 + Math.random() * 90000)}`,
-                title, category, description, isAnonymous,
-                submittedBy: isAnonymous ? 'Anonymous' : currentUser.id,
-                submitterName: isAnonymous ? 'Anonymous' : currentUser.name,
-                email: isAnonymous ? null : currentUser.email,
+                id: `${Math.floor(100000 + Math.random() * 900000)}`,
+                title: document.getElementById('title').value,
+                category: document.getElementById('category').value,
+                description: document.getElementById('description').value,
+                suggestedSolution: document.getElementById('solution').value,
+                isAnonymous: document.getElementById('anon').checked,
+                submittedBy: document.getElementById('anon').checked ? 'Anonymous' : currentUser.id,
+                submitterName: document.getElementById('anon').checked ? 'Anonymous' : currentUser.name,
+                email: document.getElementById('anon').checked ? null : currentUser.email,
                 date: new Date().toISOString().split('T')[0],
-                status: 'New',
-                history: [{ status: 'Submitted', date: new Date().toISOString().split('T')[0], notes: 'Grievance submitted.' }]
+                status: 'Acknowledged',
+                history: [{ status: 'Acknowledged', date: new Date().toISOString().split('T')[0], notes: 'Grievance received.' }]
             };
             grievances.unshift(newGrievance);
             
             document.getElementById('new-grievance-id').textContent = newGrievance.id;
-            document.getElementById('submit-form-screen').querySelectorAll('input[type="text"], textarea, select').forEach(el => el.value = '');
-            document.getElementById('anon').checked = false;
             navigateTo('confirmation-screen');
         }
 
@@ -590,12 +534,20 @@ ${currentUser.name}`;
             const g = grievances.find(item => item.id === id);
             if (!g) return;
             
-            document.getElementById('tracking-id-header').textContent = `Grievance ${g.id}`;
+            document.getElementById('tracking-id-header').textContent = `Grievance #${g.id}`;
             document.getElementById('tracking-title').textContent = g.title;
             document.getElementById('tracking-category').textContent = g.category;
             document.getElementById('tracking-date').textContent = g.date;
             document.getElementById('tracking-submitter').textContent = g.isAnonymous ? 'Anonymous' : g.submitterName;
             document.getElementById('tracking-description').textContent = g.description;
+
+            const solutionContainer = document.getElementById('tracking-solution-container');
+            if (g.suggestedSolution) {
+                document.getElementById('tracking-solution').textContent = g.suggestedSolution;
+                solutionContainer.style.display = 'block';
+            } else {
+                solutionContainer.style.display = 'none';
+            }
             
             const statusEl = document.getElementById('tracking-status');
             statusEl.textContent = g.status;
@@ -615,15 +567,11 @@ ${currentUser.name}`;
         function renderAdminTable(data) {
             const tableBody = document.getElementById('admin-table-body');
             tableBody.innerHTML = '';
-            if(!data.length) {
-                tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted-color);">No grievances match the current filter.</td></tr>`;
-                return;
-            }
             const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
             sortedData.forEach(g => {
                 const row = tableBody.insertRow();
                 const statusClass = getStatusClass(g.status);
-                const submitterInfo = g.isAnonymous ? 'Anonymous' : `${g.submitterName}<br><small>${g.email}</small>`;
+                const submitterInfo = g.isAnonymous ? 'Anonymous' : `${g.submitterName}<br><small>${g.email || ''}</small>`;
                 row.innerHTML = `
                     <td>${g.id}</td><td>${g.title}</td><td>${g.category}</td><td>${submitterInfo}</td>
                     <td>${g.date}</td><td><span class="lofi-status ${statusClass}">${g.status}</span></td>
@@ -631,54 +579,52 @@ ${currentUser.name}`;
             });
         }
 
-        function applyFilters() {
-            const status = document.getElementById('filter-status').value;
-            const category = document.getElementById('filter-category').value;
-            let filtered = grievances;
-            if (status !== 'All') filtered = filtered.filter(g => g.status === status);
-            if (category !== 'All') filtered = filtered.filter(g => g.category === category);
-            renderAdminTable(filtered);
-        }
-
         function updateGrievanceStatus(id, newStatus, notes = '') {
             const g = grievances.find(item => item.id === id);
             if (!g) return;
             g.status = newStatus;
             g.history.unshift({ status: newStatus, date: new Date().toISOString().split('T')[0], notes: notes || `Status updated to ${newStatus}.` });
-            closeModal();
-            applyFilters();
+            closeModal('admin-details-modal');
+            renderAdminTable(grievances);
         }
         
         function viewGrievanceDetails(id) {
             const g = grievances.find(item => item.id === id);
-            document.getElementById('modal-grievance-id').textContent = `Details for ${id}`;
+            document.getElementById('modal-grievance-id').textContent = `Details for #${id}`;
             const body = document.getElementById('modal-body');
             const submitterInfo = g.isAnonymous ? 'Anonymous' : `${g.submitterName} (<a href="mailto:${g.email}">${g.email}</a>)`;
             body.innerHTML = `
                 <p><strong>Title:</strong> ${g.title}</p>
                 <p><strong>Submitted By:</strong> ${submitterInfo}</p>
-                <p><strong>Status:</strong> ${g.status}</p>
                 <div style="display:flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
                     <strong>Description:</strong>
                     <div class="lofi-button" id="ai-summarize-btn" onclick="handleAiSummarize(this, '${id}')">✨ Generate Summary</div>
                 </div>
                 <div id="ai-summary-container" style="display:none;" class="ai-summary-container"></div>
                 <div class="lofi-card" style="white-space: pre-wrap; background-color: var(--background-color); margin-top:0.5rem;">${g.description}</div>
+                ${g.suggestedSolution ? `<h4 style="margin-top:1rem;">Suggested Solution</h4><div class="lofi-card" style="white-space: pre-wrap;">${g.suggestedSolution}</div>` : ''}
                 <h4 style="margin-top:1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">Actions</h4>
                 <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                    <div class="lofi-button" onclick="updateGrievanceStatus('${id}', 'Assigned to Academics', 'Forwarded to Academic Council.')">Assign to Academics</div>
                     <div class="lofi-button" onclick="updateGrievanceStatus('${id}', 'Assigned to Facilities', 'Forwarded to Facilities Dept.')">Assign to Facilities</div>
-                    <div class="lofi-button" onclick="updateGrievanceStatus('${id}', 'Under Review', 'Grievance is under review by the committee.')">Mark as Under Review</div>
-                    <div class="lofi-button primary" onclick="updateGrievanceStatus('${id}', 'Resolved', 'The issue has been marked as resolved by the admin.')">Mark as Resolved</div>
-                    <div class="lofi-button" onclick="closeModal()">Back</div>
+                    <div class="lofi-button" onclick="updateGrievanceStatus('${id}', 'Investigation in Progress', 'Case is now under active investigation.')">Start Investigation</div>
+                    <div class="lofi-button primary" onclick="updateGrievanceStatus('${id}', 'Resolved', 'The issue has been resolved.')">Mark as Resolved</div>
                 </div>`;
             document.getElementById('admin-details-modal').style.display = 'flex';
         }
 
-        function closeModal() { document.getElementById('admin-details-modal').style.display = 'none'; }
+        function checkEmergency(category) {
+            const notice = document.getElementById('emergency-notice');
+            notice.style.display = (category === 'Safety & Security' || category === 'Harassment') ? 'block' : 'none';
+        }
+        
+        function showEmergencyModal() { document.getElementById('emergency-modal').style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
 
         document.addEventListener('DOMContentLoaded', () => navigateTo('login-screen'));
     </script>
 </body>
 </html>
+
+
+
 
