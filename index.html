@@ -176,7 +176,6 @@
             <div class="screen-content">
                 <div style="max-width: 400px; margin: 0 auto; text-align: center;">
                     <img src="UsS_logo.png" alt="University Logo" style="margin-bottom: 1.5rem; border-radius: 50%; width: 100px; height: 100px; object-fit: cover;">
-
                     <h2>Portal Login</h2>
                     <label class="lofi-label" style="text-align: left;">Student / Staff ID</label>
                     <input type="text" placeholder="Enter your ID">
@@ -333,6 +332,29 @@
                     <h2>All Grievances</h2>
                     <span class="lofi-link" onclick="logout()">Logout</span>
                 </div>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
+                    <strong>Filter by:</strong>
+                    <select id="filter-status" onchange="applyFilters()" style="margin:0; width: auto; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <option value="All">Status: All</option>
+                        <option value="New">New</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                    <select id="filter-category" onchange="applyFilters()" style="margin:0; width: auto; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border-color);">
+                        <option value="All">Category: All</option>
+                        <option value="Academic">Academic</option>
+                        <option value="Administrative">Administrative</option>
+                        <option value="Facilities">Facilities</option>
+                        <option value="Hostel">Hostel</option>
+                        <option value="Library">Library</option>
+                        <option value="IT Services">IT Services</option>
+                        <option value="Finance/Fees">Finance/Fees</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Safety & Security">Safety & Security</option>
+                        <option value="Harassment">Harassment</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
                 <div class="table-responsive-wrapper">
                     <table class="lofi-table">
                         <thead><tr><th>ID</th><th>Title</th><th>Category</th><th>Submitter</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
@@ -376,7 +398,7 @@
             <div style="margin-top: 1.5rem;">
                 <p><strong>Campus Security (24/7):</strong> <a href="tel:123-456-7890">123-456-7890</a></p>
                 <p><strong>Student Counseling Services:</strong> <a href="tel:123-456-7891">123-456-7891</a></p>
-                <p><strong>Medical Emergency:</strong> <a href="tel:108">108</a></p>
+                <p><strong>Medical Emergency:</strong> <a href="tel:911">911</a></p>
             </div>
         </div>
     </div>
@@ -477,7 +499,7 @@
             window.scrollTo(0, 0);
             if (currentUser) {
                 if (screenId === 'student-dashboard-screen') renderStudentDashboard();
-                if (screenId === 'admin-dashboard-screen') renderAdminTable(grievances);
+                if (screenId === 'admin-dashboard-screen') applyFilters();
             }
         }
 
@@ -575,6 +597,10 @@
         function renderAdminTable(data) {
             const tableBody = document.getElementById('admin-table-body');
             tableBody.innerHTML = '';
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: var(--text-muted-color);">No grievances match the current filters.</td></tr>`;
+                return;
+            }
             const sortedData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
             sortedData.forEach(g => {
                 const row = tableBody.insertRow();
@@ -587,13 +613,34 @@
             });
         }
 
+        function applyFilters() {
+            const statusFilter = document.getElementById('filter-status').value;
+            const categoryFilter = document.getElementById('filter-category').value;
+            let filteredGrievances = grievances;
+
+            if (statusFilter !== 'All') {
+                if (statusFilter === 'New') {
+                    filteredGrievances = filteredGrievances.filter(g => ['New', 'Acknowledged'].includes(g.status));
+                } else if (statusFilter === 'In Progress') {
+                    filteredGrievances = filteredGrievances.filter(g => !['New', 'Acknowledged', 'Resolved'].includes(g.status));
+                } else { // Resolved
+                    filteredGrievances = filteredGrievances.filter(g => g.status === statusFilter);
+                }
+            }
+
+            if (categoryFilter !== 'All') {
+                filteredGrievances = filteredGrievances.filter(g => g.category === categoryFilter);
+            }
+            renderAdminTable(filteredGrievances);
+        }
+
         function updateGrievanceStatus(id, newStatus, notes = '') {
             const g = grievances.find(item => item.id === id);
             if (!g) return;
             g.status = newStatus;
             g.history.unshift({ status: newStatus, date: new Date().toISOString().split('T')[0], notes: notes || `Status updated to ${newStatus}.` });
             closeModal('admin-details-modal');
-            renderAdminTable(grievances);
+            applyFilters();
         }
         
         function viewGrievanceDetails(id) {
